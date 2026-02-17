@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 OUTSYSTEMS_API_URL = "https://personal-ejiszdmu.outsystemscloud.com/ASISTENCIA/rest/RESTAPI1/RESTAPIPOSTBIO"
 
-@app.route("/receive", methods=["POST"])
+@app.route("iClockAPI/cdata", methods=["POST"])
 def receive():
     try:
         data = request.get_json()
