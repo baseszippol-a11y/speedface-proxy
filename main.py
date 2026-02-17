@@ -7,22 +7,28 @@ app = Flask(__name__)
 
 OUTSYSTEMS_API_URL = "https://personal-ejiszdmu.outsystemscloud.com/ASISTENCIA/rest/RESTAPI1/RESTAPIPOST"
 
-@app.route("/receive", methods=["POST"])
-def receive():
-    try:
-        data = request.get_json()
-        timestamp = datetime.datetime.now().isoformat()
-        with open("logs.txt", "a") as f:
-            f.write(f"{timestamp} - Recibido: {data}\n")
-        response = requests.post(OUTSYSTEMS_API_URL, json=data)
-        with open("logs.txt", "a") as f:
-            f.write(f"{timestamp} - Enviado a OutSystems: {response.status_code}\n")
-        return jsonify({"status": "ok"}), 200
-    except Exception as e:
-        with open("logs.txt", "a") as f:
-            f.write(f"{datetime.datetime.now().isoformat()} - ERROR: {str(e)}\n")
-        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/receive/iclock/cdata", methods=["GET", "POST"])
+def iclock():
+
+    print("METHOD:", request.method)
+    print("ARGS:", request.args)
+    print("FORM:", request.form)
+    print("DATA:", request.data)
+
+    # El dispositivo primero hace GET (handshake)
+    if request.method == "GET":
+        return "OK"
+
+    # Cuando hace POST, vienen los registros
+    if request.method == "POST":
+
+        raw_data = request.data.decode("utf-8")
+        print("RAW DATA:", raw_data)
+
+        # Aquí luego parsearemos los datos
+        return "OK"
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))  # Render asigna un puerto automáticamente
+    port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
