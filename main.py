@@ -7,28 +7,43 @@ app = Flask(__name__)
 
 OUTSYSTEMS_API_URL = "https://personal-ejiszdmu.outsystemscloud.com/ASISTENCIA/rest/RESTAPI1/RESTAPIPOST"
 
-
 @app.route("/receive/iclock/cdata", methods=["GET", "POST"])
 def iclock():
 
-    print("METHOD:", request.method)
-    print("ARGS:", request.args)
-    print("FORM:", request.form)
-    print("DATA:", request.data)
-
-    # El dispositivo primero hace GET (handshake)
     if request.method == "GET":
         return "OK"
 
-    # Cuando hace POST, vienen los registros
     if request.method == "POST":
 
-        raw_data = request.data.decode("utf-8")
-        print("RAW DATA:", raw_data)
+        raw_data = request.data.decode("utf-8").strip()
+        lines = raw_data.split("\n")
 
-        # Aquí luego parsearemos los datos
+        for line in lines:
+            if line.strip() == "":
+                continue
+
+            parts = line.split()
+
+            user_id = parts[0]
+            fecha = parts[1]
+            hora = parts[2]
+            estado = parts[3]
+
+            fecha_hora = f"{fecha} {hora}"
+
+            data_outsystems = {
+                "UserId": user_id,
+                "PunchTime": fecha_hora,
+                "Status": estado
+            }
+
+            print("Enviando a OutSystems:", data_outsystems)
+
+            response = requests.post(
+                OUTSYSTEMS_API_URL,
+                json=data_outsystems
+            )
+
+            print("Respuesta OutSystems:", response.status_code)
+
         return "OK"
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
