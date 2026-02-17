@@ -5,7 +5,7 @@ import datetime
 
 app = Flask(__name__)
 
-OUTSYSTEMS_API_URL = "https://personal-ejiszdmu.outsystemscloud.com/ASISTENCIA/rest/RESTAPI1/RESTAPIPOSTBIO"
+OUTSYSTEMS_API_URL = "https://personal-ejiszdmu.outsystemscloud.com/ASISTENCIA/rest/RESTAPI1/RESTAPIPOST"
 
 @app.route("/receive", methods=["POST"])
 def receive():
